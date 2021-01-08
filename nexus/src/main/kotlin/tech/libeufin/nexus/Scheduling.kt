@@ -141,6 +141,7 @@ fun startOperationScheduler(httpClient: HttpClient) {
                         // Reset next scheduled execution
                         t.nextScheduledExecutionSec = null
                         t.prevScheduledExecutionSec = nowSec
+                        t.iterations++
                     }
                 }
             }

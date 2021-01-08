@@ -406,6 +406,7 @@ object NexusScheduledTasksTable : LongIdTable() {
     val taskParams = text("taskParams")
     val nextScheduledExecutionSec = long("nextScheduledExecutionSec").nullable()
     val prevScheduledExecutionSec = long("lastScheduledExecutionSec").nullable()
+    val iterations = long("iterations").default(0)
 }
 
 class NexusScheduledTaskEntity(id: EntityID<Long>) : LongEntity(id) {
@@ -419,6 +420,7 @@ class NexusScheduledTaskEntity(id: EntityID<Long>) : LongEntity(id) {
     var taskParams by NexusScheduledTasksTable.taskParams
     var nextScheduledExecutionSec by NexusScheduledTasksTable.nextScheduledExecutionSec
     var prevScheduledExecutionSec by NexusScheduledTasksTable.prevScheduledExecutionSec
+    var iterations by NexusScheduledTasksTable.iterations
 }
 
 /**
@@ -491,6 +493,7 @@ fun dbCreateTables(dbConnectionString: String) {
             OfferedBankAccountsTable,
             NexusScheduledTasksTable,
             NexusPermissionsTable,
+            OfferedBankAccountsTable
         )
     }
 }

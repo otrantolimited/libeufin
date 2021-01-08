@@ -75,7 +75,6 @@ fun getFacadeState(type: String, facade: FacadeEntity): JsonNode {
     }
 }
 
-
 fun ensureNonNull(param: String?): String {
     return param ?: throw NexusError(
         HttpStatusCode.BadRequest, "Bad ID given: $param"
@@ -446,6 +445,7 @@ fun serverMain(dbName: String, host: String, port: Int) {
                         ops.set<JsonNode>(it.taskName, t)
                         t.put("cronspec", it.taskCronspec)
                         t.put("type", it.taskType)
+                        t.put("iterations", it.iterations)
                         t.set<JsonNode>("params", jacksonObjectMapper().readTree(it.taskParams))
                     }
                 }
