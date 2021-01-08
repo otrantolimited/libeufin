@@ -36,6 +36,17 @@ import java.time.Duration
 import java.time.Instant
 import java.time.ZonedDateTime
 
+// tick duration in milliseconds.
+private var tick: Long = 1000
+
+fun setTick(millis: Long) {
+    tick = millis
+}
+
+fun getTick(): Long {
+    return tick
+}
+
 private data class TaskSchedule(
     val taskId: Long,
     val name: String,
@@ -135,7 +146,7 @@ fun startOperationScheduler(httpClient: HttpClient) {
             }
 
             // Wait a bit
-            delay(Duration.ofSeconds(1))
+            delay(Duration.ofMillis(tick))
         }
     }
 }

@@ -113,6 +113,10 @@ data class NexusMessage(
     val message: String
 )
 
+data class Tick(
+    val millis: Long
+)
+
 data class BankConnectionInfo(
     val name: String,
     val type: String

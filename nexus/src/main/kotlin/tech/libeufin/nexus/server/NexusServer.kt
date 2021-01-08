@@ -253,10 +253,28 @@ fun serverMain(dbName: String, host: String, port: Int) {
 
         startOperationScheduler(client)
         routing {
+
             get("/config") {
                 call.respond(
                     makeJsonObject {
                         prop("version", getVersion())
+                    }
+                )
+            }
+            
+            // to be restricted to superuser only.
+            post("/tick") {
+                val body = call.receive<Tick>()
+                setTick(body.millis)
+                call.respond(object {})
+                return@post
+            }
+
+            get("/service-config") {
+                call.respond(
+                    object {
+                        val dbConn = dbName
+                        val tick = getTick()
                     }
                 )
                 return@get
