@@ -418,7 +418,7 @@ fun createPain001document(paymentData: NexusPaymentInitiationData): String {
                     }
                     element("ReqdExctnDt") {
                         val dateMillis = paymentData.preparationTimestamp
-                        text(importDateFromMillis(dateMillis).toDashedDate())
+                        text(importZonedDateFromMillis(dateMillis).toDashedDate())
                     }
                     element("Dbtr/Nm") {
                         text(paymentData.debtorName)

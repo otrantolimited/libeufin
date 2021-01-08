@@ -328,8 +328,9 @@ fun serverMain(dbName: String, port: Int) {
                         it[subject] = body.subject
                         it[amount] = body.amount
                         it[currency] = body.currency
-                        it[date] = Instant.now().toEpochMilli()
                         it[accountServicerReference] = "sandbox-$randId"
+                        it[date] = getNow().millis()
+                        it[pmtInfId] = "pmtinfid-$randId"
                         it[account] = getBankAccountFromIban(localIban).id
                         it[direction] = body.direction
                     }

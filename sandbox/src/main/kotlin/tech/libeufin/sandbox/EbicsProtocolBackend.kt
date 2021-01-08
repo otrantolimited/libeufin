@@ -46,6 +46,7 @@ import java.security.interfaces.RSAPrivateCrtKey
 import java.security.interfaces.RSAPublicKey
 import java.time.Instant
 import java.time.LocalDateTime
+import java.time.ZonedDateTime
 import java.util.*
 import java.util.zip.DeflaterInputStream
 import java.util.zip.InflaterInputStream
@@ -208,7 +209,7 @@ fun buildCamtString(type: Int, subscriberIban: String, history: List<RawPayment>
      * - Proprietary code of the bank transaction
      * - Id of the servicer (Issuer and Code)
      */
-    val now = LocalDateTime.now()
+    val now = getNow()
     val dashedDate = now.toDashedDate()
     val zonedDateTime = now.toZonedString()
     return constructXml(indent = true) {
@@ -439,14 +440,16 @@ private fun constructCamtResponse(type: Int, subscriber: EbicsSubscriberEntity):
      *
 
     val dateRange = (header.static.orderDetails?.orderParams as EbicsRequest.StandardOrderParams).dateRange
-    val (start: LocalDateTime, end: LocalDateTime) = if (dateRange != null) {
+    val (start: ZonedDateTime, end: ZonedDateTime) = if (dateRange != null) {
         Pair(
-            importDateFromMillis(dateRange.start.toGregorianCalendar().timeInMillis),
-            importDateFromMillis(dateRange.end.toGregorianCalendar().timeInMillis)
+            importZonedDateFromMillis(dateRange.start.toGregorianCalendar().timeInMillis),
+            importZonedDateFromMillis(dateRange.end.toGregorianCalendar().timeInMillis)
         )
-    } else Pair(parseDashedDate("1970-01-01"), LocalDateTime.now())
 
-    */
+    } else Pair(dashedDateToZonedDateTime("1970-01-01"), getNow())
+
+     */
+    
     val bankAccount = getBankAccountFromSubscriber(subscriber)
     logger.info("getting history for account with iban ${bankAccount.iban}")
     val history = historyForAccount(bankAccount.iban)
@@ -567,7 +570,7 @@ private fun handleCct(paymentRequest: String) {
                 it[subject] = parseResult.subject
                 it[amount] = parseResult.amount.toString()
                 it[currency] = parseResult.currency
-                it[date] = Instant.now().toEpochMilli()
+                it[date] = getNow().millis()
                 it[pmtInfId] = parseResult.pmtInfId
                 it[accountServicerReference] = "sandboxref-getRandomString(16)"
                 it[direction] = "DBIT"

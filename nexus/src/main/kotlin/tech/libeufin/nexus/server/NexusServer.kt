@@ -604,9 +604,9 @@ fun serverMain(dbName: String, host: String, port: Int) {
                                 amount = "${it.currency}:${it.sum}",
                                 subject = it.subject,
                                 submissionDate = if (sd != null) {
-                                    importDateFromMillis(sd).toDashedDate()
+                                    importZonedDateFromMillis(sd).toDashedDate()
                                 } else null,
-                                preparationDate = importDateFromMillis(it.preparationDate).toDashedDate()
+                                preparationDate = importZonedDateFromMillis(it.preparationDate).toDashedDate()
                             )
                         )
                     }
@@ -635,11 +635,9 @@ fun serverMain(dbName: String, host: String, port: Int) {
                         creditorIban = res.paymentInitiation.creditorIban,
                         amount = "${res.paymentInitiation.currency}:${res.paymentInitiation.sum}",
                         subject = res.paymentInitiation.subject,
-                        submissionDate = if (sd != null) {
-                            importDateFromMillis(sd).toDashedDate()
-                        } else null,
+                        submissionDate = if (sd != null) { importZonedDateFromMillis(sd).toDashedDate() } else null,
                         status = res.paymentStatus,
-                        preparationDate = importDateFromMillis(res.paymentInitiation.preparationDate).toDashedDate()
+                        preparationDate = importZonedDateFromMillis(res.paymentInitiation.preparationDate).toDashedDate()
                     )
                 )
                 return@get

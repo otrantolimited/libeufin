@@ -31,6 +31,7 @@ import org.jetbrains.exposed.sql.transactions.transaction
 import tech.libeufin.nexus.bankaccount.fetchBankAccountTransactions
 import tech.libeufin.nexus.bankaccount.submitAllPaymentInitiations
 import tech.libeufin.nexus.server.FetchSpecJson
+import tech.libeufin.util.getNow
 import java.lang.IllegalArgumentException
 import java.time.Duration
 import java.time.Instant
@@ -59,7 +60,6 @@ private data class TaskSchedule(
 private suspend fun runTask(client: HttpClient, sched: TaskSchedule) {
     logger.info("running task $sched")
     try {
-
         when (sched.resourceType) {
             "bank-account" -> {
                 when (sched.type) {
@@ -114,7 +114,7 @@ fun startOperationScheduler(httpClient: HttpClient) {
                         logger.error("invalid cronspec in schedule ${it.resourceType}/${it.resourceId}/${it.taskName}")
                         return@forEach
                     }
-                    val zonedNow = ZonedDateTime.now()
+                    val zonedNow = getNow()
                     val et = ExecutionTime.forCron(cron)
                     val next = et.nextExecution(zonedNow)
                     logger.info("scheduling task ${it.taskName} at $next (now is $zonedNow)")
@@ -122,7 +122,7 @@ fun startOperationScheduler(httpClient: HttpClient) {
                 }
             }
 
-            val nowSec = Instant.now().epochSecond
+            val nowSec = getNow().toEpochSecond()
             // Second, find tasks that are due
             val dueTasks = transaction {
                 NexusScheduledTaskEntity.find {

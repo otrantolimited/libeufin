@@ -36,6 +36,8 @@ import tech.libeufin.nexus.server.FetchSpecJson
 import tech.libeufin.nexus.server.Pain001Data
 import tech.libeufin.nexus.server.requireBankConnection
 import tech.libeufin.util.XMLUtil
+import tech.libeufin.util.getNow
+import tech.libeufin.util.millis
 import java.time.Instant
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -266,7 +268,7 @@ fun getPaymentInitiation(uuid: Long): PaymentInitiationEntity {
  */
 fun addPaymentInitiation(paymentData: Pain001Data, debtorAccount: NexusBankAccountEntity): PaymentInitiationEntity {
     return transaction {
-        val now = Instant.now().toEpochMilli()
+        val now = getNow().millis()
         val nowHex = now.toString(16)
         val painCounter = debtorAccount.pain001Counter++
         val painHex = painCounter.toString(16)

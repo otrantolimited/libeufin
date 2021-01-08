@@ -5,9 +5,7 @@ import org.jetbrains.exposed.sql.select
 import org.jetbrains.exposed.sql.transactions.transaction
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
-import tech.libeufin.util.RawPayment
-import tech.libeufin.util.importDateFromMillis
-import tech.libeufin.util.toDashedDate
+import tech.libeufin.util.*
 
 private val logger: Logger = LoggerFactory.getLogger("tech.libeufin.sandbox")
 
@@ -37,7 +35,7 @@ fun historyForAccount(iban: String): List<RawPayment> {
                     debitorIban = it[BankAccountTransactionsTable.debtorIban],
                     debitorBic = it[BankAccountTransactionsTable.debtorBic],
                     debitorName = it[BankAccountTransactionsTable.debtorName],
-                    date = importDateFromMillis(it[BankAccountTransactionsTable.date]).toDashedDate(),
+                    date = importZonedDateFromMillis(it[BankAccountTransactionsTable.date]).toDashedDate(),
                     amount = it[BankAccountTransactionsTable.amount],
                     currency = it[BankAccountTransactionsTable.currency],
                     // The line below produces a value too long (>35 chars),

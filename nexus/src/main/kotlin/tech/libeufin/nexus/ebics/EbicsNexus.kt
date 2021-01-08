@@ -697,7 +697,7 @@ fun getEbicsKeyLetterPdf(conn: NexusBankConnectionEntity): ByteArray {
     val po = ByteArrayOutputStream()
     val pdfWriter = PdfWriter(po)
     val pdfDoc = PdfDocument(pdfWriter)
-    val date = LocalDateTime.now()
+    val date = getNow()
     val dateStr = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
 
     fun writeCommon(doc: Document) {
@@ -801,7 +801,7 @@ suspend fun submitEbicsPaymentInitiation(httpClient: HttpClient, paymentInitiati
         val paymentInitiation = PaymentInitiationEntity.findById(paymentInitiationId)
             ?: throw NexusError(HttpStatusCode.NotFound, "payment initiation not found")
         paymentInitiation.submitted = true
-        paymentInitiation.submissionDate = LocalDateTime.now().millis()
+        paymentInitiation.submissionDate = getNow().millis()
     }
 }
 

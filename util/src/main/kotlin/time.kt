@@ -27,32 +27,36 @@ private var LIBEUFIN_CLOCK = Clock.system(ZoneId.systemDefault())
 fun setClock(rel: Duration) {
     LIBEUFIN_CLOCK = Clock.offset(LIBEUFIN_CLOCK, rel)
 }
+
 fun getNow(): ZonedDateTime {
     return ZonedDateTime.now(LIBEUFIN_CLOCK)
 }
 
-fun LocalDateTime.toZonedString(): String {
-    return DateTimeFormatter.ISO_OFFSET_DATE_TIME.format(this.atZone(ZoneId.systemDefault()))
+fun getNow(zone: ZoneId): ZonedDateTime {
+    return ZonedDateTime.now(zone)
 }
 
-fun LocalDateTime.toDashedDate(): String {
-    return DateTimeFormatter.ISO_DATE.format(this)
+fun ZonedDateTime.toZonedString(): String {
+    return this.format(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
 }
 
-fun parseDashedDate(date: String): LocalDateTime {
+fun ZonedDateTime.toDashedDate(): String {
+    return this.format(DateTimeFormatter.ISO_DATE)
+}
+
+fun dashedDateToZonedDateTime(date: String): ZonedDateTime {
     val dtf = DateTimeFormatter.ISO_DATE
-    val asDate = LocalDate.parse(date, dtf)
-    return asDate.atStartOfDay()
+    val asLocalDate = LocalDate.parse(date, dtf)
+    return asLocalDate.atStartOfDay(ZoneId.systemDefault())
 }
 
-fun importDateFromMillis(millis: Long): LocalDateTime {
-    return LocalDateTime.ofInstant(
+fun importZonedDateFromMillis(millis: Long): ZonedDateTime {
+    return ZonedDateTime.ofInstant(
         Instant.ofEpochMilli(millis),
         ZoneId.systemDefault()
     )
 }
 
-fun LocalDateTime.millis(): Long {
-    val instant = Instant.from(this.atZone(ZoneId.systemDefault()))
-    return instant.toEpochMilli()
+fun ZonedDateTime.millis(): Long {
+    return this.toInstant().toEpochMilli()
 }

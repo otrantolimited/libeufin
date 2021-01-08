@@ -24,8 +24,9 @@ import org.junit.Test
 import tech.libeufin.sandbox.BankAccountTransactionsTable
 import tech.libeufin.sandbox.BankAccountsTable
 import tech.libeufin.sandbox.dbDropTables
+import tech.libeufin.util.dashedDateToZonedDateTime
+import tech.libeufin.util.getNow
 import tech.libeufin.util.millis
-import tech.libeufin.util.parseDashedDate
 import java.io.File
 import java.time.LocalDateTime
 
@@ -75,7 +76,7 @@ class DBTest {
                     it[debtorName] = "Debitor Name"
                     it[subject] = "deal"
                     it[amount] = "EUR:1"
-                    it[date] = LocalDateTime.now().millis()
+                    it[date] = getNow().millis()
                     it[currency] = "EUR"
                     it[pmtInfId] = "0"
                     it[direction] = "DBIT"
@@ -86,11 +87,7 @@ class DBTest {
                 addLogger(StdOutSqlLogger)
                 BankAccountTransactionsTable.select {
                     BankAccountTransactionsTable.date.between(
-                        parseDashedDate(
-                            "1970-01-01"
-                        ).millis(),
-                        LocalDateTime.now().millis()
-                    )
+                        dashedDateToZonedDateTime("1970-01-01").millis(), getNow().millis())
                 }.firstOrNull()
             }
             assert(result != null)

@@ -83,8 +83,12 @@ object EbicsDateFormat {
         .append(DateTimeFormatter.ISO_DATE)
         .parseDefaulting(ChronoField.HOUR_OF_DAY, 0)
         .parseDefaulting(ChronoField.MINUTE_OF_HOUR, 0)
-        .parseDefaulting(ChronoField.OFFSET_SECONDS, ZoneId.systemDefault().rules.getOffset(Instant.now()).totalSeconds.toLong())
-        .toFormatter()!!
+        .parseDefaulting(
+            ChronoField.OFFSET_SECONDS,
+            ZoneId.systemDefault().rules.getOffset(
+                getNow().toInstant()
+            ).totalSeconds.toLong())
+        .toFormatter()
 }
 
 @JsonTypeName("standard-date-range")
