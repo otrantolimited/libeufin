@@ -469,8 +469,13 @@ fun serverMain(dbName: String, host: String, port: Int) {
                     // sanity checks.
                     when (schedSpec.type) {
                         "fetch" -> {
-                            jacksonObjectMapper().treeToValue(schedSpec.params, FetchSpecJson::class.java)
-                                ?: throw NexusError(HttpStatusCode.BadRequest, "bad fetch spec")
+                            // only checking validity.
+                            try {
+                                jacksonObjectMapper().treeToValue(schedSpec.params, FetchSpecJson::class.java)
+                            } catch (e: Exception) {
+                                logger.error(e.message)
+                                throw NexusError(HttpStatusCode.BadRequest, "bad fetch spec")
+                            }
                         }
                         "submit" -> {
                         }
@@ -491,8 +496,7 @@ fun serverMain(dbName: String, host: String, port: Int) {
                         this.taskCronspec = schedSpec.cronspec
                         this.taskName = requireValidResourceName(schedSpec.name)
                         this.taskType = schedSpec.type
-                        this.taskParams =
-                            jacksonObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(schedSpec.params)
+                        this.taskParams = jacksonObjectMapper().writerWithDefaultPrettyPrinter().writeValueAsString(schedSpec.params)
                     }
                 }
                 call.respond(object {})
