@@ -54,7 +54,6 @@ import com.fasterxml.jackson.databind.exc.MismatchedInputException
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.MissingKotlinParameterException
 import org.jetbrains.exposed.sql.statements.api.ExposedBlob
-import java.time.Instant
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.core.context
 import com.github.ajalt.clikt.core.subcommands
@@ -85,6 +84,10 @@ import tech.libeufin.util.ebics_h004.EbicsResponse
 import tech.libeufin.util.ebics_h004.EbicsTypes
 import java.net.BindException
 import java.util.*
+import java.time.Duration
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import kotlin.random.Random
 import kotlin.system.exitProcess
 
@@ -292,6 +295,7 @@ fun serverMain(dbName: String, port: Int) {
             get("/") {
                 call.respondText("Hello, this is Sandbox\n", ContentType.Text.Plain)
             }
+
             get("/config") {
                 call.respond(object {
                     val name = "libeufin-sandbox"
@@ -300,6 +304,22 @@ fun serverMain(dbName: String, port: Int) {
                     val version = "0.0.0-dev.0"
                 })
             }
+
+            post("/admin/time/set-relative") {
+                val body = call.receive<LibeufinRelativeTime>()
+                val d = Duration.ofSeconds(body.rel)
+                setClock(d)
+                call.respond(object {})
+                return@post
+            }
+
+            post("/admin/time/set-absolute") {
+                val body = call.receive<LibeufinAbsoluteTime>()
+                setClock(importZonedDateFromSecond(body.abs))
+                call.respond(object {})
+                return@post
+            }
+
             // only reason for a post is to hide the iban (to some degree.)
             post("/admin/payments/camt") {
                 val body = call.receiveJson<CamtParams>()

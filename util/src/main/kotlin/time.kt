@@ -24,16 +24,15 @@ import java.time.format.DateTimeFormatter
 
 private var LIBEUFIN_CLOCK = Clock.system(ZoneId.systemDefault())
 
+fun setClock(abs: ZonedDateTime) {
+    LIBEUFIN_CLOCK = Clock.fixed(abs.toInstant(), abs.zone)
+}
 fun setClock(rel: Duration) {
     LIBEUFIN_CLOCK = Clock.offset(LIBEUFIN_CLOCK, rel)
 }
 
 fun getNow(): ZonedDateTime {
     return ZonedDateTime.now(LIBEUFIN_CLOCK)
-}
-
-fun getNow(zone: ZoneId): ZonedDateTime {
-    return ZonedDateTime.now(zone)
 }
 
 fun ZonedDateTime.toZonedString(): String {
@@ -48,6 +47,13 @@ fun dashedDateToZonedDateTime(date: String): ZonedDateTime {
     val dtf = DateTimeFormatter.ISO_DATE
     val asLocalDate = LocalDate.parse(date, dtf)
     return asLocalDate.atStartOfDay(ZoneId.systemDefault())
+}
+
+fun importZonedDateFromSecond(second: Long): ZonedDateTime {
+    return ZonedDateTime.ofInstant(
+        Instant.ofEpochSecond(second),
+        ZoneId.systemDefault()
+    )
 }
 
 fun importZonedDateFromMillis(millis: Long): ZonedDateTime {

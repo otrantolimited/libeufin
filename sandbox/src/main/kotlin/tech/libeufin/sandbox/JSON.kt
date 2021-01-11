@@ -110,3 +110,11 @@ data class BankAccountReport(
     var creationTime: Long,
     val message: String
 )
+
+data class LibeufinRelativeTime(
+    val rel: Long
+)
+
+data class LibeufinAbsoluteTime(
+    val abs: Long
+)
