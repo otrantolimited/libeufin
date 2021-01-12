@@ -101,7 +101,6 @@ object NexusCron {
 fun startOperationScheduler(httpClient: HttpClient) {
     GlobalScope.launch {
         while (true) {
-            logger.trace("running schedule loop")
             // First, assign next execution time stamps to all tasks that need them
             transaction {
                 NexusScheduledTaskEntity.find {
@@ -123,6 +122,7 @@ fun startOperationScheduler(httpClient: HttpClient) {
 
             val nowSec = getNow().toEpochSecond()
             // Second, find tasks that are due
+            logger.debug("nowSec: $nowSec")
             val dueTasks = transaction {
                 NexusScheduledTaskEntity.find {
                     NexusScheduledTasksTable.nextScheduledExecutionSec lessEq nowSec
@@ -130,7 +130,6 @@ fun startOperationScheduler(httpClient: HttpClient) {
                     TaskSchedule(it.id.value, it.taskName, it.taskType, it.resourceType, it.resourceId, it.taskParams)
                 }
             }
-
             // Execute those due tasks
             dueTasks.forEach {
                 runTask(httpClient, it)

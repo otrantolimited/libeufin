@@ -308,15 +308,23 @@ fun serverMain(dbName: String, port: Int) {
             post("/admin/time/set-relative") {
                 val body = call.receive<LibeufinRelativeTime>()
                 val d = Duration.ofSeconds(body.rel)
+                val oldNow = getNow()
                 setClock(d)
-                call.respond(object {})
+                call.respond(object {
+                    val old = oldNow.toZonedString()
+                    val new = getNow().toZonedString()
+                })
                 return@post
             }
 
             post("/admin/time/set-absolute") {
                 val body = call.receive<LibeufinAbsoluteTime>()
+                val oldNow = getNow()
                 setClock(importZonedDateFromSecond(body.abs))
-                call.respond(object {})
+                call.respond(object {
+                    val old = oldNow.toZonedString()
+                    val new = getNow().toZonedString()
+                })
                 return@post
             }
 

@@ -516,6 +516,7 @@ def test_sandbox_camt():
         )
     )
 
+<<<<<<< HEAD
 def test_schedule_deletion():
     assertResponse(
         post("/".join([
@@ -531,7 +532,6 @@ def test_schedule_deletion():
             auth=auth.HTTPBasicAuth("admin", "x")
         )
     )
-
     resp = assertResponse(
         get("/".join([
             PERSONA.nexus.base_url,
