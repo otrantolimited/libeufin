@@ -516,7 +516,6 @@ def test_sandbox_camt():
         )
     )
 
-<<<<<<< HEAD
 def test_schedule_deletion():
     assertResponse(
         post("/".join([
